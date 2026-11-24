@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071226">
+<title>Krisanthium | New Year 2027</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:wght@500;600;700&display=swap');
+:root{--gold:#f6d889;--gold2:#fff1c5;--ink:#071226;--blue:#10284b}
+*{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;background:var(--ink);color:#fff;font-family:'DM Sans',sans-serif;overflow:hidden}
+body{min-height:100svh;background:radial-gradient(ellipse at 50% 40%,#17345a 0,#0a1830 40%,#030914 100%);display:grid;place-items:center}
+#sky{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.glow{position:fixed;width:42vw;height:42vw;max-width:700px;max-height:700px;border-radius:50%;background:radial-gradient(circle,rgba(221,173,83,.13),transparent 68%);top:10%;left:50%;transform:translateX(-50%);pointer-events:none}
+.content{position:relative;z-index:1;text-align:center;width:min(92vw,850px);padding:30px 16px 44px}
+.eyebrow{letter-spacing:.36em;text-transform:uppercase;font-size:clamp(10px,1.5vw,13px);color:#d9c18a;opacity:.9;margin-bottom:26px}
+.brand{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:#b6c7df;margin-bottom:30px}
+.title{font-family:'Playfair Display',serif;font-size:clamp(54px,12vw,120px);font-weight:600;line-height:.92;letter-spacing:-.04em;margin:0;color:var(--gold2);text-shadow:0 0 28px rgba(246,216,137,.18);opacity:0;transform:translateY(18px);transition:opacity 1.2s,transform 1.2s}
+.title.show{opacity:1;transform:translateY(0)}
+.title span{display:block;font-size:clamp(70px,17vw,165px);background:linear-gradient(180deg,#fff8dc,#e8bf67 48%,#a9752d);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 5px 22px rgba(228,177,75,.14))}
+.divider{height:1px;width:90px;margin:28px auto;background:linear-gradient(90deg,transparent,#d7b76f,transparent);opacity:.7}
+.message{font-family:'Playfair Display',serif;font-size:clamp(16px,3vw,24px);line-height:1.6;color:#e4eaf4;max-width:650px;margin:0 auto;opacity:0;transition:opacity 1.5s .5s}.message.show{opacity:1}
+.sub{margin-top:18px;font-size:12px;letter-spacing:.14em;color:#b8c6d8;opacity:0;transition:opacity 1.5s 1s}.sub.show{opacity:.8}
+.countdown{font-family:'Playfair Display',serif;font-size:clamp(80px,22vw,190px);font-weight:600;color:#f6d889;text-shadow:0 0 45px rgba(246,216,137,.5);line-height:1;opacity:0;position:absolute;inset:50% 0 auto;transform:translateY(-50%);pointer-events:none}.countdown.show{opacity:1;animation:countpop .85s ease-out}@keyframes countpop{0%{transform:translateY(-50%) scale(.65);opacity:0}30%{opacity:1}100%{transform:translateY(-50%) scale(1);opacity:0}}
+.controls{margin-top:36px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;opacity:0;transition:opacity 1s 1.3s}.controls.show{opacity:1}
+button{border:1px solid rgba(246,216,137,.6);background:rgba(246,216,137,.08);color:#f7e7b9;border-radius:999px;padding:13px 22px;font:500 11px 'DM Sans',sans-serif;letter-spacing:.15em;text-transform:uppercase;cursor:pointer;backdrop-filter:blur(8px);transition:.25s}button:hover{background:rgba(246,216,137,.18);border-color:#f6d889;transform:translateY(-1px)}button.primary{background:linear-gradient(135deg,#e6c371,#a97734);border:0;color:#081326;font-weight:700;box-shadow:0 8px 30px rgba(194,145,61,.2)}
+.footer{position:fixed;bottom:20px;left:0;right:0;text-align:center;font-size:10px;letter-spacing:.18em;color:#8193ac;z-index:1}
+@media(max-height:650px){.content{padding:12px}.brand{margin-bottom:15px}.eyebrow{margin-bottom:14px}.divider{margin:16px auto}.controls{margin-top:20px}}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas><div class="glow"></div>
+<main class="content">
+  <div class="brand">KRISANTHIUM</div>
+  <div class="eyebrow" id="eyebrow">A new chapter begins</div>
+  <div class="countdown" id="countdown" aria-live="polite"></div>
+  <h1 class="title" id="title">HAPPY NEW YEAR<span>2027</span></h1>
+  <div class="divider"></div>
+  <p class="message" id="message">May the year ahead bring new opportunities,<br>meaningful moments, and success in every journey.</p>
+  <div class="sub" id="sub">WISHING YOU A BRIGHT &amp; BEAUTIFUL YEAR AHEAD</div>
+  <div class="controls" id="controls">
+    <button class="primary" id="celebrate">↗ Celebrate again</button>
+    <button id="sound">♫ Sound: Off</button>
+  </div>
+</main>
+<div class="footer">WITH BEST WISHES · KRISANTHIUM</div>
+<script>
+(() => {
+ const canvas=document.getElementById('sky'),ctx=canvas.getContext('2d');let w,h,dpr,stars=[],fireworks=[],particles=[];
+ function resize(){dpr=Math.min(window.devicePixelRatio||1,2);w=innerWidth;h=innerHeight;canvas.width=w*dpr;canvas.height=h*dpr;canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(dpr,0,0,dpr,0,0);stars=Array.from({length:Math.floor(w*h/6500)},()=>({x:Math.random()*w,y:Math.random()*h,r:Math.random()*1.2+.2,a:Math.random(),tw:Math.random()*0.02+.005}))}window.addEventListener('resize',resize);resize();
+ function burst(x,y,power=1){let hue=[38,48,190,205,280][Math.floor(Math.random()*5)];let n=70+Math.floor(Math.random()*55);for(let i=0;i<n;i++){let angle=Math.random()*Math.PI*2,speed=(Math.random()*4+1.5)*power;particles.push({x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,life:1,decay:Math.random()*.012+.008,size:Math.random()*2.4+1,hue:hue+Math.random()*22})}fireworks.push({x,y,life:1})}
+ function launchRandom(){burst(Math.random()*w*.82+w*.09,Math.random()*h*.48+h*.06,Math.random()*.65+.65)}
+ let last=0;function frame(t){ctx.clearRect(0,0,w,h);stars.forEach(s=>{s.a+=s.tw;if(s.a>1||s.a<.1)s.tw*=-1;ctx.fillStyle=`rgba(220,232,255,${Math.max(.12,Math.min(.9,s.a))})`;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill()});particles=particles.filter(p=>p.life>0);particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.025;p.vx*=.992;p.vy*=.992;p.life-=p.decay;ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=`hsl(${p.hue},95%,70%)`;ctx.shadowBlur=10;ctx.shadowColor=ctx.fillStyle;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fill()});ctx.globalAlpha=1;ctx.shadowBlur=0;if(t-last>1000){last=t;if(Math.random()<.7)launchRandom()}requestAnimationFrame(frame)}requestAnimationFrame(frame);
+ let audioOn=false,audioCtx=null,master=null,melodyTimer=null;function startAudio(){if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.16;master.connect(audioCtx.destination)}if(audioCtx.state==='suspended')audioCtx.resume();audioOn=true;document.getElementById('sound').textContent='♫ Sound: On';playLoop()}
+ function tone(freq,duration=.35,type='sine',volume=.3,delay=0){if(!audioCtx)return;let t=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(volume,t+.025);g.gain.exponentialRampToValueAtTime(.0001,t+duration);o.connect(g);g.connect(master);o.start(t);o.stop(t+duration+.03)}
+ function playLoop(){if(!audioOn)return;const notes=[523.25,659.25,783.99,659.25,587.33,698.46,880,698.46,523.25,659.25,783.99,1046.5,880,783.99,659.25,587.33];let i=0;clearInterval(melodyTimer);melodyTimer=setInterval(()=>{if(!audioOn)return;tone(notes[i%notes.length],.48,'sine',.12);tone(notes[(i+2)%notes.length]*2,.3,'triangle',.035,.08);i++},430)}
+ function toggleSound(){if(audioOn){audioOn=false;clearInterval(melodyTimer);master.gain.setTargetAtTime(.0001,audioCtx.currentTime,.08);document.getElementById('sound').textContent='♫ Sound: Off'}else{startAudio();master.gain.setTargetAtTime(.16,audioCtx.currentTime,.15)}}
+ const countdown=document.getElementById('countdown');let runId=0;function celebrate(){runId++;let id=runId;document.getElementById('title').classList.remove('show');document.getElementById('message').classList.remove('show');document.getElementById('sub').classList.remove('show');document.getElementById('controls').classList.remove('show');document.getElementById('eyebrow').style.opacity='0';let seq=['3','2','1'];let step=0;function tick(){if(id!==runId)return;if(step<seq.length){countdown.textContent=seq[step];countdown.classList.remove('show');void countdown.offsetWidth;countdown.classList.add('show');burst(w/2+(Math.random()-.5)*w*.3,h*.3+(Math.random()-.5)*h*.15,.55);if(audioOn)tone([523,659,784][step],.35,'triangle',.2);step++;setTimeout(tick,900)}else{countdown.classList.remove('show');document.getElementById('eyebrow').style.opacity='1';document.getElementById('title').classList.add('show');document.getElementById('message').classList.add('show');document.getElementById('sub').classList.add('show');document.getElementById('controls').classList.add('show');for(let j=0;j<7;j++)setTimeout(()=>{if(id===runId)launchRandom()},j*280);if(audioOn){tone(523,.65,'sine',.18);tone(659,.65,'sine',.15,.2);tone(784,.8,'sine',.13,.4);tone(1046,1,'triangle',.12,.65)}}}tick()}
+ document.getElementById('celebrate').addEventListener('click',celebrate);document.getElementById('sound').addEventListener('click',toggleSound);setTimeout(celebrate,700);
+})();
+</script>
+</body>
+</html>
